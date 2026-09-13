@@ -1,148 +1,31 @@
-/* =========================
-   DARK / LIGHT MODE TOGGLE
-========================= */
+const themeToggle = document.getElementById('themeToggle');
+const menuToggle = document.getElementById('menuToggle');
+const mobileNav = document.getElementById('mobileNav');
 
-const themeToggle = document.getElementById("themeToggle");
+const savedTheme = localStorage.getItem('samreen-theme');
+if (savedTheme === 'dark') document.body.classList.add('dark');
 
-if (themeToggle) {
-
-themeToggle.addEventListener("click", () => {
-
-document.body.classList.toggle("dark");
-
+themeToggle?.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('samreen-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
 
-}
-
-
-/* =========================
-   TYPING EFFECT (HERO)
-========================= */
-
-const typingElement = document.querySelector(".typing");
-
-const text = "Mobile Web Developer | AI Developer | UI Designer";
-
-let index = 0;
-
-function typingEffect() {
-
-if (!typingElement) return;
-
-typingElement.textContent = text.slice(0, index);
-
-index++;
-
-if (index > text.length) {
-
-index = 0;
-
-}
-
-}
-
-setInterval(typingEffect, 100);
-
-
-
-/* =========================
-   ANIMATED COUNTERS
-========================= */
-
-const counters = document.querySelectorAll(".counter");
-
-const startCounters = () => {
-
-counters.forEach(counter => {
-
-const updateCounter = () => {
-
-const target = +counter.getAttribute("data-target");
-const count = +counter.innerText;
-
-const increment = target / 100;
-
-if (count < target) {
-
-counter.innerText = Math.ceil(count + increment);
-
-setTimeout(updateCounter, 20);
-
-} else {
-
-counter.innerText = target;
-
-}
-
-};
-
-updateCounter();
-
+menuToggle?.addEventListener('click', () => {
+  mobileNav?.classList.toggle('open');
 });
 
-};
-
-
-
-/* =========================
-   SCROLL REVEAL ANIMATION
-========================= */
-
-const revealElements = document.querySelectorAll(".reveal");
-
-function revealOnScroll() {
-
-const windowHeight = window.innerHeight;
-
-revealElements.forEach(element => {
-
-const elementTop = element.getBoundingClientRect().top;
-
-if (elementTop < windowHeight - 100) {
-
-element.classList.add("active");
-
-}
-
+mobileNav?.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileNav.classList.remove('open'));
 });
 
-}
+const revealElements = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
 
-
-
-/* =========================
-   START EVENTS
-========================= */
-
-window.addEventListener("scroll", revealOnScroll);
-
-window.addEventListener("load", () => {
-
-revealOnScroll();
-startCounters();
-
-});
-/* TIMELINE SCROLL ANIMATION */
-
-const timelineItems = document.querySelectorAll(".timeline-item");
-
-function showTimeline(){
-
-const triggerBottom = window.innerHeight * 0.85;
-
-timelineItems.forEach(item =>{
-
-const boxTop = item.getBoundingClientRect().top;
-
-if(boxTop < triggerBottom){
-
-item.classList.add("show");
-
-}
-
-});
-
-}
-
-window.addEventListener("scroll", showTimeline);
-showTimeline();
+revealElements.forEach(el => observer.observe(el));
